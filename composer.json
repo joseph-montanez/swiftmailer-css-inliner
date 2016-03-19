@@ -1,6 +1,7 @@
 {
     "name": "openbuildings/swiftmailer-css-inliner",
     "description": "Inline the css of your html emails",
+    "minimum-stability": "dev",
     "license": "BSD-3-Clause",
     "authors": [
         {
@@ -11,7 +12,7 @@
     ],
     "require" : {
         "php": ">=5.4",
-        "tijsverkoyen/css-to-inline-styles": "^1.5"
+        "tijsverkoyen/css-to-inline-styles": "^2.0"
     },
     "require-dev" : {
         "swiftmailer/swiftmailer": "^5.1"
