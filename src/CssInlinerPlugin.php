@@ -19,42 +19,35 @@ class CssInlinerPlugin implements Swift_Events_SendListener
 	 */
 	private $converter;
 
-	/**
-	 * @param CssToInlineStyles $converter
-	 */
-	public function __construct(CssToInlineStyles $converter = null)
-	{
-		if ($converter) {
-			$this->converter = $converter;
-		} else {
-			$this->converter = new CssToInlineStyles();
-			$this->converter->setUseInlineStylesBlock(true);
-		}
-	}
+        /**
+         * @param CssToInlineStyles $converter
+         */
+        public function __construct(CssToInlineStyles $converter = null)
+        {
+                if ($converter) {
+                        $this->converter = $converter;
+                } else {
+                        $this->converter = new CssToInlineStyles();
+                }
+        }
 
-	/**
-	 * @param Swift_Events_SendEvent $event
-	 */
-	public function beforeSendPerformed(Swift_Events_SendEvent $event)
-	{
-		$message = $event->getMessage();
+        /**
+         * @param Swift_Events_SendEvent $event
+         */
+        public function beforeSendPerformed(Swift_Events_SendEvent $event)
+        {
+                $message = $event->getMessage();
 
-		if ($message->getContentType() === 'text/html') {
-			$this->converter->setCSS('');
-			$this->converter->setHTML($message->getBody());
+                if ($message->getContentType() === 'text/html') {
+                        $message->setBody($this->converter->convert($message->getBody()));
+                }
 
-			$message->setBody($this->converter->convert());
-		}
-
-		foreach ($message->getChildren() as $part) {
-			if (strpos($part->getContentType(), 'text/html') === 0) {
-				$this->converter->setCSS('');
-				$this->converter->setHTML($part->getBody());
-
-				$part->setBody($this->converter->convert());
-			}
-		}
-	}
+                foreach ($message->getChildren() as $part) {
+                        if (strpos($part->getContentType(), 'text/html') === 0) {
+                                $part->setBody($this->converter->convert($part->getBody()));
+                        }
+                }
+        }
 
 	/**
 	 * Do nothing
